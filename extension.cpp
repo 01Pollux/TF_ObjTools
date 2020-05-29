@@ -60,7 +60,6 @@ cell_t sm_CTakeDamageInfo(IPluginContext* pContext, const cell_t* Params)
 {
 	CTakeDmgInfoBuilder* info = new CTakeDmgInfoBuilder;
 	memset(info, 0, sizeof(CTakeDmgInfoBuilder));
-	smutils->LogMessage(myself, "size of CTakeDmgInfo : %d", sizeof(CTakeDmgInfoBuilder));
 
 	HandleError err;
 	Handle_t hndl = handlesys->CreateHandle(g_TakeDmgInfo, info, pContext->GetIdentity(), myself->GetIdentity(), &err);
