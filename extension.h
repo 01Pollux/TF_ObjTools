@@ -32,10 +32,10 @@
 #ifndef _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_
 #define _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_
 
- /**
-  * @file extension.h
-  * @brief Sample extension code header.
-  */
+/**
+ * @file extension.h
+ * @brief Sample extension code header.
+ */
 
 #include "smsdk_ext.h"
 #include <basehandle.h>
@@ -110,7 +110,6 @@ static cell_t sm_SetDamageInfo_GetVector(IPluginContext* pContext, const cell_t*
 static cell_t sm_SetDamageInfo_SetVector(IPluginContext* pContext, const cell_t* Params);
 static cell_t sm_SetDamageInfo_GetEnt(IPluginContext* pContext, const cell_t* Params);
 static cell_t sm_SetDamageInfo_SetEnt(IPluginContext* pContext, const cell_t* Params);
-static cell_t sm_GetDamageInfo_Infos(IPluginContext* pContext, const cell_t* Params);
 
 CTakeDmgInfoBuilder* ReadDamageInfoFromHandle(IPluginContext* pContext, cell_t Param);
 
