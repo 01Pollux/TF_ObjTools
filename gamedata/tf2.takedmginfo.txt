@@ -1,0 +1,14 @@
+"Games"
+{
+	"tf"
+	{
+		"Offsets"
+		{
+			"CTFGameRules::DeathNotice"
+			{
+				"linux"		"243"
+				"windows"	"241"
+			}
+		}
+	}
+}
