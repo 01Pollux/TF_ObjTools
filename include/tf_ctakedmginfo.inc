@@ -56,7 +56,7 @@ methodmap CTakeDamageInfo < Handle {
 	/**
 	 * Stores an int/bool/eCritType value inside the object
 	 */
-	public native void StoreInt(CTakeDamageOffset offset, int result);
+	public native void StoreInt(CTakeDamageOffset offset, int val);
 	
 	/**
 	 * Reads a float value inside the object
@@ -65,7 +65,7 @@ methodmap CTakeDamageInfo < Handle {
 	/**
 	 * Stores a float value inside the object
 	 */
-	public native void StoreFloat(CTakeDamageOffset offset, float result);
+	public native void StoreFloat(CTakeDamageOffset offset, float val);
 	
 	/**
 	 * Reads a vector array inside the object
@@ -74,7 +74,7 @@ methodmap CTakeDamageInfo < Handle {
 	/**
 	 * Stores a vector array inside the object
 	 */
-	public native void StoreVector(CTakeDamageOffset offset, const float result[3]);
+	public native void StoreVector(CTakeDamageOffset offset, const float val[3]);
 	
 	/**
 	 * Reads a CBaseHandle entity inside the object
@@ -83,7 +83,14 @@ methodmap CTakeDamageInfo < Handle {
 	/**
 	 * Stores a CBaseHandle entity inside the object
 	 */
-	public native void StoreEnt(CTakeDamageOffset offset, int result);
+	public native void StoreEnt(CTakeDamageOffset offset, int val);
+	
+	/**
+	 * Fires CTFGameRules::DeathNotice event
+	 *
+	 * @param client : victim index
+	 */
+	public native void DeathNotice(int client);
 	
 	/**
 	 * Return the address to use as CTakeDamageInfo object
