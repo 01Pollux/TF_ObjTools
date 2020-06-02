@@ -56,7 +56,7 @@ const sp_nativeinfo_t g_InfoNatives[] = {
 	{"CTakeDamageInfo.ReadEnt", sm_SetDamageInfo_GetEnt},
 	{"CTakeDamageInfo.StoreEnt", sm_SetDamageInfo_SetEnt},
 	{"CTakeDamageInfo.Infos.get", sm_GetDamageInfo_Data},
-	{"CTakeDamageInfo.Fire", sm_CTakeDamageInfo_Fire},
+	{"CTakeDamageInfo.DeathNotice", sm_CTakeDamageInfo_Fire},
 	{NULL, NULL},
 };
 
