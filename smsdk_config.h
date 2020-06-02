@@ -42,7 +42,7 @@
 #define SMEXT_CONF_DESCRIPTION	"Create/Read CTakeDamageInfo object"
 #define SMEXT_CONF_VERSION		"1.0.0"
 #define SMEXT_CONF_AUTHOR		"01Pollux"
-#define SMEXT_CONF_URL			"https://github.com/01Pollux/CTakeDmgInfo_Tool"
+#define SMEXT_CONF_URL			"https://github.com/01Pollux/TF_CTakeDamageInfo"
 #define SMEXT_CONF_LOGTAG		"TAKEDMGTOOL"
 #define SMEXT_CONF_LICENSE		"GPL"
 #define SMEXT_CONF_DATESTRING	__DATE__
