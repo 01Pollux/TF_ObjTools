@@ -42,7 +42,7 @@
 #define SMEXT_CONF_DESCRIPTION	"Create/Read CTakeDamageInfo object"
 #define SMEXT_CONF_VERSION		"1.0.0"
 #define SMEXT_CONF_AUTHOR		"01Pollux"
-#define SMEXT_CONF_URL			"https://github.com/01Pollux/TF_CTakeDamageInfo"
+#define SMEXT_CONF_URL			"https://github.com/01Pollux/CTakeDmgInfo_Tool"
 #define SMEXT_CONF_LOGTAG		"TAKEDMGTOOL"
 #define SMEXT_CONF_LICENSE		"GPL"
 #define SMEXT_CONF_DATESTRING	__DATE__
@@ -52,19 +52,19 @@
  */
 #define SMEXT_LINK(name) SDKExtension *g_pExtensionIface = name;
 
- /**
-  * @brief Sets whether or not this plugin required Metamod.
-  * NOTE: Uncomment to enable, comment to disable.
-  */
-  //#define SMEXT_CONF_METAMOD		
+/**
+ * @brief Sets whether or not this plugin required Metamod.
+ * NOTE: Uncomment to enable, comment to disable.
+ */
+#define SMEXT_CONF_METAMOD		
 
-  /** Enable interfaces you want to use here by uncommenting lines */
-//#define SMEXT_ENABLE_FORWARDSYS
+/** Enable interfaces you want to use here by uncommenting lines */
+#define SMEXT_ENABLE_FORWARDSYS
 #define SMEXT_ENABLE_HANDLESYS
 #define SMEXT_ENABLE_PLAYERHELPERS
 //#define SMEXT_ENABLE_DBMANAGER
 #define SMEXT_ENABLE_GAMECONF
-#define SMEXT_ENABLE_MEMUTILS
+//#define SMEXT_ENABLE_MEMUTILS
 #define SMEXT_ENABLE_GAMEHELPERS
 //#define SMEXT_ENABLE_TIMERSYS
 //#define SMEXT_ENABLE_THREADER

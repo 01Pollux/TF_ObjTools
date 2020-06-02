@@ -41,6 +41,9 @@ SMEXT_LINK(&g_CTakeDmgExt);
 
 HandleType_t g_TakeDmgInfo;
 CTakeDmgInfoHandler g_CTakeDmgInfoHandler;
+ISDKTools* sdktools;
+
+SH_DECL_MANUALHOOK3_void(DeathNotice, 0, 0, 0, CBaseEntity*, CTakeDmgInfoBuilder&, const char*)
 
 const sp_nativeinfo_t g_InfoNatives[] = {
 	{"CTakeDamageInfo.CTakeDamageInfo", sm_CTakeDamageInfo},
@@ -53,6 +56,7 @@ const sp_nativeinfo_t g_InfoNatives[] = {
 	{"CTakeDamageInfo.ReadEnt", sm_SetDamageInfo_GetEnt},
 	{"CTakeDamageInfo.StoreEnt", sm_SetDamageInfo_SetEnt},
 	{"CTakeDamageInfo.Infos.get", sm_GetDamageInfo_Data},
+	{"CTakeDamageInfo.Fire", sm_CTakeDamageInfo_Fire},
 	{NULL, NULL},
 };
 
@@ -83,8 +87,27 @@ cell_t sm_GetDamageInfo_Data(IPluginContext* pContext, const cell_t* Params)
 #endif
 }
 
+cell_t sm_CTakeDamageInfo_Fire(IPluginContext* pContext, const cell_t* Params)
+{
+	CTakeDmgInfoBuilder* infos = ReadDamageInfoFromHandle(pContext, Params[1]);
+	if (!infos) {
+		return pContext->ThrowNativeError("Invalid CTakeDamageInfo Handle %x", infos);
+	}
 
-//CTakeDamageInfo.GetInt(offset) = val;
+	CBaseEntity* pVictim = gamehelpers->ReferenceToEntity(Params[2]);
+	if (!pVictim) {
+		return pContext->ThrowNativeError("Invalid Entity index : %i", Params[2]);
+	}
+
+	void* gamerules = sdktools->GetGameRules();
+	if (!gamerules) {
+		return pContext->ThrowNativeError("Failed to find GameRules object");
+	}
+
+	SH_MCALL(gamerules, DeathNotice)(pVictim, *infos, "player_death");
+	return 1;
+}
+
 cell_t sm_SetDamageInfo_GetInt(IPluginContext* pContext, const cell_t* Params)
 {
 	CTakeDmgInfoBuilder* info = ReadDamageInfoFromHandle(pContext, Params[1]);
@@ -116,7 +139,7 @@ cell_t sm_SetDamageInfo_GetInt(IPluginContext* pContext, const cell_t* Params)
 	}
 	return 0;
 }
-//CTakeDamageInfo.SetInt(offset, val);
+
 cell_t sm_SetDamageInfo_SetInt(IPluginContext* pContext, const cell_t* Params)
 {
 	CTakeDmgInfoBuilder* info = ReadDamageInfoFromHandle(pContext, Params[1]);
@@ -157,12 +180,11 @@ cell_t sm_SetDamageInfo_SetInt(IPluginContext* pContext, const cell_t* Params)
 	return 0;
 }
 
-//CTakeDamageInfo.GetFloat(offset) = val;
 cell_t sm_SetDamageInfo_GetFloat(IPluginContext* pContext, const cell_t* Params)
 {
 	CTakeDmgInfoBuilder* info = ReadDamageInfoFromHandle(pContext, Params[1]);
 	if (!info) {
-		return 0;
+		return 0.0;
 	}
 	TakeDmgOffset offset = static_cast<TakeDmgOffset>(Params[2]);
 	switch (offset) {
@@ -180,9 +202,9 @@ cell_t sm_SetDamageInfo_GetFloat(IPluginContext* pContext, const cell_t* Params)
 	default:
 		return pContext->ThrowNativeError("Invalid data type %i for CTakeDamageInfo_Float", Params[2]);
 	}
-	return 0;
+	return 0.0;
 }
-//CTakeDamageInfo.SetFloat(offset, val);
+
 cell_t sm_SetDamageInfo_SetFloat(IPluginContext* pContext, const cell_t* Params)
 {
 	CTakeDmgInfoBuilder* info = ReadDamageInfoFromHandle(pContext, Params[1]);
@@ -214,7 +236,6 @@ cell_t sm_SetDamageInfo_SetFloat(IPluginContext* pContext, const cell_t* Params)
 	return 0;
 }
 
-//CTakeDamageInfo.GetVector(offset, float vec[3]);
 cell_t sm_SetDamageInfo_GetVector(IPluginContext* pContext, const cell_t* Params)
 {
 	CTakeDmgInfoBuilder* info = ReadDamageInfoFromHandle(pContext, Params[1]);
@@ -256,7 +277,7 @@ cell_t sm_SetDamageInfo_GetVector(IPluginContext* pContext, const cell_t* Params
 	}
 	return 0;
 }
-//CTakeDamageInfo.SetVector(offset, float vec[3]);
+
 cell_t sm_SetDamageInfo_SetVector(IPluginContext* pContext, const cell_t* Params)
 {
 	CTakeDmgInfoBuilder* info = ReadDamageInfoFromHandle(pContext, Params[1]);
@@ -293,7 +314,6 @@ cell_t sm_SetDamageInfo_SetVector(IPluginContext* pContext, const cell_t* Params
 	return 0;
 }
 
-//CTakeDamageInfo.GetEnt(offset) = ent;
 cell_t sm_SetDamageInfo_GetEnt(IPluginContext* pContext, const cell_t* Params)
 {
 	CTakeDmgInfoBuilder* info = ReadDamageInfoFromHandle(pContext, Params[1]);
@@ -317,7 +337,7 @@ cell_t sm_SetDamageInfo_GetEnt(IPluginContext* pContext, const cell_t* Params)
 	}
 	return -1;
 }
-//CTakeDamageInfo.SetEnt(offset, ent);
+
 cell_t sm_SetDamageInfo_SetEnt(IPluginContext* pContext, const cell_t* Params)
 {
 	CTakeDmgInfoBuilder* info = ReadDamageInfoFromHandle(pContext, Params[1]);
@@ -348,15 +368,29 @@ cell_t sm_SetDamageInfo_SetEnt(IPluginContext* pContext, const cell_t* Params)
 	default:
 		return pContext->ThrowNativeError("Invalid data type %i for CTakeDamageInfo_Ent", Params[2]);
 	}
-	return 0;
+	return -1;
 }
-
 
 
 bool CTakeDmgExt::SDK_OnLoad(char* error, size_t maxlength, bool late)
 {
+	IGameConfig* pConfig = NULL;
+	if (!gameconfs->LoadGameConfigFile("tf2.takedmginfo", &pConfig, NULL, NULL)) {
+		ke::SafeStrcpy(error, maxlength, "Failed to load tf2.takedmginfo.txt");
+		return false;
+	}
+	int offset;
+	if (!pConfig->GetOffset("CTFGameRules::DeathNotice", &offset)) {
+		ke::SafeStrcpy(error, maxlength, "Failed to load \"CTFGameRules::DeathNotice\" offset");
+		return false;
+	}
+	SH_MANUALHOOK_RECONFIGURE(DeathNotice, offset, 0, 0);
+	gameconfs->CloseGameConfigFile(pConfig);
+	
+	sharesys->AddDependency(myself, "sdktools.ext", true, true);
 	sharesys->AddNatives(myself, g_InfoNatives);
 	g_TakeDmgInfo = handlesys->CreateType("CTakeDamageInfo", &g_CTakeDmgInfoHandler, 0, NULL, NULL, myself->GetIdentity(), NULL);
+
 	return true;
 }
 
@@ -364,6 +398,12 @@ void CTakeDmgExt::SDK_OnUnload()
 {
 	handlesys->RemoveType(g_TakeDmgInfo, myself->GetIdentity());
 }
+
+void CTakeDmgExt::SDK_OnAllLoaded()
+{
+	SM_GET_LATE_IFACE(SDKTOOLS, sdktools);
+}
+
 
 void CTakeDmgInfoHandler::OnHandleDestroy(Handle_t type, void* object)
 {

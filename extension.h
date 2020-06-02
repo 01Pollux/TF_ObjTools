@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * TF2 CTakeDamageInfo Object
+ * TF2 CTakeDamageInfo Object 
  * Copyright (C) 2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
@@ -32,14 +32,15 @@
 #ifndef _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_
 #define _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_
 
-/**
- * @file extension.h
- * @brief Sample extension code header.
- */
+ /**
+  * @file extension.h
+  * @brief Sample extension code header.
+  */
 
 #include "smsdk_ext.h"
 #include <basehandle.h>
 #include <mathlib/vector.h>
+#include <ISDKTools.h>
 
 enum CritType {
 	kCritType_None,
@@ -100,7 +101,6 @@ enum TakeDmgOffset {
 };
 
 
-static cell_t sm_GetDamageInfo_Data(IPluginContext* pContext, const cell_t* Params);
 static cell_t sm_CTakeDamageInfo(IPluginContext* pContext, const cell_t* Params);
 static cell_t sm_SetDamageInfo_GetInt(IPluginContext* pContext, const cell_t* Params);
 static cell_t sm_SetDamageInfo_SetInt(IPluginContext* pContext, const cell_t* Params);
@@ -110,6 +110,8 @@ static cell_t sm_SetDamageInfo_GetVector(IPluginContext* pContext, const cell_t*
 static cell_t sm_SetDamageInfo_SetVector(IPluginContext* pContext, const cell_t* Params);
 static cell_t sm_SetDamageInfo_GetEnt(IPluginContext* pContext, const cell_t* Params);
 static cell_t sm_SetDamageInfo_SetEnt(IPluginContext* pContext, const cell_t* Params);
+static cell_t sm_GetDamageInfo_Data(IPluginContext* pContext, const cell_t* Params);
+static cell_t sm_CTakeDamageInfo_Fire(IPluginContext* pContext, const cell_t* Params);
 
 CTakeDmgInfoBuilder* ReadDamageInfoFromHandle(IPluginContext* pContext, cell_t Param);
 
@@ -125,10 +127,13 @@ public:
 	
 	virtual bool SDK_OnLoad(char* error, size_t maxlength, bool late);
 
+	virtual void SDK_OnAllLoaded();
+
 	virtual void SDK_OnUnload();
 };
 
 extern HandleType_t g_TakeDmgInfo;
 extern CTakeDmgInfoHandler g_CTakeDmgInfoHandler;
+extern ISDKTools* sdktools;
 
 #endif // _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_
