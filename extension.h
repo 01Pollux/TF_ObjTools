@@ -39,101 +39,38 @@
 
 #include "smsdk_ext.h"
 #include <basehandle.h>
-#include <mathlib/vector.h>
 #include <ISDKTools.h>
+#include <IBinTools.h>
 
-enum CritType {
-	kCritType_None,
-	kCritType_MiniCrit,
-	kCritType_Crit,
+
+enum HookType
+{
+	TF2_OnTakeDamage,
+	TF2_OnTakeDamageAlive,
+	TF2_OnTakeDamagePost,
+	TF2_OnTakeDamageAlivePost,
+
+	TF2_MAXHOOKS,
 };
 
-class CTakeDmgInfoBuilder {
-
-public:
-	Vector m_vecDamageForce;
-	Vector m_vecDamagePosition;
-	Vector m_vecReportedPosition;
-
-	CBaseHandle m_hInflictor;
-	CBaseHandle m_hAttacker;
-	CBaseHandle m_hWeapon;
-
-	float m_flDamage;
-	float m_flMaxDamage;
-	float m_flBaseDamage;
-	int m_bitsDamageType;
-	int m_iDamageCustom;
-	int m_iDamageStats;
-	int m_iAmmoType;
-	int m_iDamagedOtherPlayers;
-	int m_iPlayerPenetrationCount;
-	float m_flDamageBonus;
-
-	CBaseHandle m_hDamageBonusProvider;
-
-	bool m_bForceFriendlyFire;
-	float m_flDamageForForce;
-	CritType m_eCritType;
-};
-
-enum TakeDmgOffset {
-	vecDamageForce = 0,
-	vecDamagePosition,
-	vecReportedPosition,
-	hInflictor,
-	hAttacker,
-	hWeapon,
-	flDamage,
-	flMaxDamage,
-	flBaseDamage,
-	bitsDamageType,
-	iDamageCustom,
-	iDamageStats,
-	iAmmoType,
-	iDamagedOtherPlayers,
-	iPlayerPenetrationCount,
-	flDamageBonus,
-	hDamageBonusProvider,
-	bForceFriendlyFire,
-	flDamageForForce,
-	eCritType
-};
-
-
-static cell_t sm_CTakeDamageInfo(IPluginContext* pContext, const cell_t* Params);
-static cell_t sm_SetDamageInfo_GetInt(IPluginContext* pContext, const cell_t* Params);
-static cell_t sm_SetDamageInfo_SetInt(IPluginContext* pContext, const cell_t* Params);
-static cell_t sm_SetDamageInfo_GetFloat(IPluginContext* pContext, const cell_t* Params);
-static cell_t sm_SetDamageInfo_SetFloat(IPluginContext* pContext, const cell_t* Params);
-static cell_t sm_SetDamageInfo_GetVector(IPluginContext* pContext, const cell_t* Params);
-static cell_t sm_SetDamageInfo_SetVector(IPluginContext* pContext, const cell_t* Params);
-static cell_t sm_SetDamageInfo_GetEnt(IPluginContext* pContext, const cell_t* Params);
-static cell_t sm_SetDamageInfo_SetEnt(IPluginContext* pContext, const cell_t* Params);
-static cell_t sm_GetDamageInfo_Data(IPluginContext* pContext, const cell_t* Params);
-static cell_t sm_CTakeDamageInfo_Fire(IPluginContext* pContext, const cell_t* Params);
-
-CTakeDmgInfoBuilder* ReadDamageInfoFromHandle(IPluginContext* pContext, cell_t Param);
-
-class CTakeDmgInfoHandler: public IHandleTypeDispatch {
-public:
-	void OnHandleDestroy(Handle_t type, void* object);
-};
-
-
-class CTakeDmgExt : public SDKExtension
+class CTakeDmgInfoBuilder;
+class TF2ObjTools: public SDKExtension,
+					public IConCommandBaseAccessor
 {
 public:
-	
-	virtual bool SDK_OnLoad(char* error, size_t maxlength, bool late);
+	bool SDK_OnLoad(char* error, size_t maxlength, bool late);
+	void SDK_OnAllLoaded();
+	bool QueryInterfaceDrop(SMInterface* pInterface);
+	void SDK_OnUnload();
+	bool SDK_OnMetamodLoad(ISmmAPI* ismm, char* error, size_t maxlen, bool late);
+	bool SDK_OnMetamodUnload(char* error, size_t maxlen);
 
-	virtual void SDK_OnAllLoaded();
-
-	virtual void SDK_OnUnload();
+public:
+	bool RegisterConCommandBase(ConCommandBase* pVar);
 };
 
-extern HandleType_t g_TakeDmgInfo;
-extern CTakeDmgInfoHandler g_CTakeDmgInfoHandler;
+extern IGameConfig* pConfig;
 extern ISDKTools* sdktools;
+extern IBinTools* bintools;
 
 #endif // _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_
