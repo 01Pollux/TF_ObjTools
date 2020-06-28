@@ -1,11 +1,13 @@
 # vim: set sts=2 ts=8 sw=2 tw=99 et ft=python:
 import os, sys
 
-projectName = 'tf_ctakedmginfo'
+projectName = 'tf_objtools'
 
 # smsdk_ext.cpp will be automatically added later
 sourceFiles = [
   'extension.cpp',
+  'ammodefs.cpp',
+  'dmginfo.cpp'
 ]
 
 ###############
