@@ -24,9 +24,9 @@ def CopyFiles(src, dest, files):
     source_path = os.path.join(builder.sourcePath, src, source_file)
     builder.AddCopy(source_path, dest_entry)
 
-CopyFiles('include', 'addons/sourcemod/scripting/include', [ 'tf_ctakedmginfo.inc' ])
+CopyFiles('include', 'addons/sourcemod/scripting/include', [ 'tf_objtools.inc' ])
 
-CopyFiles('gamedata', 'addons/sourcemod/gamedata', [ 'tf2.takedmginfo.txt' ])
+CopyFiles('gamedata', 'addons/sourcemod/gamedata', [ 'tf2.objtools.txt' ])
 
 # Copy binaries.
 for cxx_task in Extension.extensions:
