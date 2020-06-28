@@ -200,7 +200,7 @@ public __ext_INTERFACE_SetNTVOptional()
 public Extension __ext_TF_OBJTOOLS = 
 {
 	name = "[TF2] CTakeDamageInfo and AmmoDef Tools",
-	file = "tf_objexpose.ext",
+	file = "tf_objtools.ext",
 #if defined AUTOLOAD_EXTENSIONS
 	autoload = 1,
 #else
