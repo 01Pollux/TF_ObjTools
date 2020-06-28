@@ -1,10 +1,10 @@
 /*
 **
 */
-#if defined _TF_OBJEXP_included
+#if defined _TF_OBJTOOLS_included
  #endinput
 #endif
-#define _TF_OBJEXP_included
+#define _TF_OBJTOOLS_included
 
 enum CTakeDamageOffset {
 	vecDamageForce = 0,
@@ -197,7 +197,7 @@ public __ext_INTERFACE_SetNTVOptional()
 }
 #endif
 
-public Extension __ext_TF_OBJEXP = 
+public Extension __ext_TF_OBJTOOLS = 
 {
 	name = "[TF2] CTakeDamageInfo and AmmoDef Tools",
 	file = "tf_objexpose.ext",
