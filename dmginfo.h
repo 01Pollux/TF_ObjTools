@@ -63,7 +63,7 @@ enum TakeDmgOffset
 	eCritType
 };
 
-cell_t CTakeDamageInfo(IPluginContext* pContext, const cell_t* params);
+cell_t CTakeDamageInfo_CTakeDamageInfo(IPluginContext* pContext, const cell_t* params);
 cell_t CTakeDamageInfo_GetInt(IPluginContext* pContext, const cell_t* params);
 cell_t CTakeDamageInfo_SetInt(IPluginContext* pContext, const cell_t* params);
 cell_t CTakeDamageInfo_GetFloat(IPluginContext* pContext, const cell_t* params);
@@ -81,7 +81,7 @@ cell_t CalcMeleeDamageForce(IPluginContext* pContext, const cell_t* params);
 
 const sp_nativeinfo_t g_InfoNatives[] =
 {
-	{"CTakeDamageInfo.CTakeDamageInfo", CTakeDamageInfo},
+	{"CTakeDamageInfo.CTakeDamageInfo", CTakeDamageInfo_CTakeDamageInfo},
 	{"CTakeDamageInfo.ReadInt", CTakeDamageInfo_GetInt},
 	{"CTakeDamageInfo.StoreInt", CTakeDamageInfo_SetInt},
 	{"CTakeDamageInfo.ReadFloat", CTakeDamageInfo_GetFloat},
@@ -105,5 +105,8 @@ public:
 	void OnHandleDestroy(Handle_t type, void* object);
 };
 
+CTakeDmgInfoBuilder* ReadDamageInfoFromHandle(IPluginContext* pContext, cell_t Param);
+
 extern CTakeDmgInfoHandler g_CTakeDmgInfoHandler;
 extern HandleType_t g_TakeDmgInfo;
+extern ConVar* phys_pushscale;
