@@ -3,7 +3,6 @@
 #include "dmginfo.h"
 #include <vstdlib/random.h>
 
-static ConVarRef phys_pushscale("phys_pushscale");
 void CTakeDmgInfoHandler::OnHandleDestroy(Handle_t type, void* object)
 {
 	CTakeDmgInfoBuilder* obj = (CTakeDmgInfoBuilder*)object;
@@ -13,7 +12,7 @@ void CTakeDmgInfoHandler::OnHandleDestroy(Handle_t type, void* object)
 	}
 }
 
-static CTakeDmgInfoBuilder* ReadDamageInfoFromHandle(IPluginContext* pContext, cell_t Param)
+CTakeDmgInfoBuilder* ReadDamageInfoFromHandle(IPluginContext* pContext, cell_t Param)
 {
 	Handle_t hndl = static_cast<Handle_t>(Param);
 	HandleError err;
@@ -29,7 +28,7 @@ static CTakeDmgInfoBuilder* ReadDamageInfoFromHandle(IPluginContext* pContext, c
 }
 
 
-cell_t CTakeDamageInfo(IPluginContext* pContext, const cell_t* params)
+cell_t CTakeDamageInfo_CTakeDamageInfo(IPluginContext* pContext, const cell_t* params)
 {
 	CTakeDmgInfoBuilder* info = new CTakeDmgInfoBuilder;
 	memset(info, 0, sizeof(CTakeDmgInfoBuilder));
@@ -142,7 +141,7 @@ cell_t CalcExplosiveDmgForce(IPluginContext* pContext, const cell_t* params)
 
 	VectorNormalize(vecForce);
 	vecForce *= flForceScale;
-	vecForce *= phys_pushscale.GetFloat();
+	vecForce *= phys_pushscale->GetFloat();
 	vecForce *= flscale;
 	infos->m_vecDamageForce = vecForce;
 
@@ -168,7 +167,7 @@ cell_t CalcBulletDamageForce(IPluginContext* pContext, const cell_t* params)
 	VectorNormalize(vecForce);
 
 	vecForce *= GetAmmoDef()->DamageForce(params[2]);
-	vecForce *= phys_pushscale.GetFloat();
+	vecForce *= phys_pushscale->GetFloat();
 	vecForce *= sp_ctof(params[5]);
 	infos->m_vecDamageForce = vecForce;
 
@@ -195,7 +194,7 @@ cell_t CalcMeleeDamageForce(IPluginContext* pContext, const cell_t* params)
 
 	float flscale = infos->m_flBaseDamage * 75 * 4;
 	vecForce *= flscale;
-	vecForce *= phys_pushscale.GetFloat();
+	vecForce *= phys_pushscale->GetFloat();
 	vecForce *= sp_ctof(params[4]);
 	infos->m_vecDamageForce = vecForce;
 	
