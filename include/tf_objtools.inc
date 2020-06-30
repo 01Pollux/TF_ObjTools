@@ -240,7 +240,7 @@ native int ST_FindEntityByHammerID(int hammerid);
 /**
  * Returns entity from its address.
  * 
- * @param hammerid
+ * @param pentity
  */
 native int ST_GetBaseEntity(Address pentity);
 
