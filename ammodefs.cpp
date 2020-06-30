@@ -4,7 +4,7 @@
 
 static inline bool IndexInRange(int index)
 {
-	if (index < 0 || index > GetAmmoDef()->m_nAmmoIndex) {
+	if (index < 0 || index >= GetAmmoDef()->m_nAmmoIndex) {
 		return false;
 	}
 	return true;
