@@ -147,41 +147,157 @@ native int CAmmoDefs_GeteTracerType(int index);
 native float CAmmoDefs_GetDamageForce(int index);
 native AmmoFlags_t CAmmoDefs_GetFlags(int index);
 native int CAmmoDefs_GetMaxCarry(int index);
-/**
- * CAmmoDef* GetAmmoDef();
- */
-native Address CAmmoDefs_Raw();
+native Address CAmmoDefs_Raw();	//CAmmoDef* GetAmmoDef();
 
-methodmap CAmmoDefs
-{
-	public static int FindIndex(const char[] name) {
-		return CAmmoDefs_FindIndex(name);
-	}
-	public static void Name(int index, char[] name, int length) {
-		CAmmoDefs_GetName(index, name, length);
-	}
-	public static int DamageType(int index) {
-		return CAmmoDefs_GetDamageType(index, name, length);
-	}
-	public static int eTracerType(int index) {
-		return CAmmoDefs_GeteTracerType(index);
-	}
-	public static float DamageForce(int index) {
-		return CAmmoDefs_GetDamageForce(index);
-	}
-	public static AmmoFlags_t Flags(int index) {
-		return CAmmoDefs_GetFlags(index);
-	}
-	public static int MaxCarry(int index) {
-		return CAmmoDefs_GetMaxCarry(index);
-	}
-	/**
-	 * CAmmoDef* GetAmmoDef();
-	 */
-	public static Address Raw() {
-		return CAmmoDefs_Raw();
-	}
-}
+
+/**
+ * Finds an entity given a procedural name.
+ * 
+ * @param name: 		The procedural name to search for, should start with '!'
+ * @param searchent:	The entity to start from when doing the search
+ * @param activator:	The activator entity if this was called from an input
+ * @param caller
+ */
+native int ST_FindEntityProcedural(const char[] name, int searchent, int activator = -1, int caller = -1);
+
+/**
+ * Find the nearest entity along the facing direction from the given origin
+ * within the angular threshold (ignores worldspawn) with the given classname.
+ * 
+ * @param origin
+ * @param facing
+ * @param threshold
+ * @param classname
+ */
+native int ST_FindEntityClassNearestFacing(const float origin[3], const float facing[3], float threshold, const char[] classname);
+
+/**
+ * Find the nearest entity along the facing direction from the given origin
+ * within the angular threshold (ignores worldspawn).
+ * 
+ * @param origin
+ * @param facing
+ * @param threshold
+ */
+native int ST_FindEntityNearestFacing(const float origin[3], const float facing[3], float threshold);
+
+/**
+ * Finds the first entity within radius distance by class name.
+ * 
+ * @param startentity:	The entity to start from when doing the search
+ * @param classname:	Entity class name
+ * @param origin:		Center of search radius
+ * @param radius:		Search radius for classname search, 0 to search everywhere
+ */
+native int ST_FindEntityByClassnameWithin(int startentity, const char[] classname, const float origin[3], float radius);
+
+/**
+ * Finds the nearest entity by class name withing given search radius.
+ * 
+ * @param classname:	Entity class name
+ * @param origin:		Center of search radius
+ * @param radius:		Search radius for classname search, 0 to search everywhere
+ */
+native int ST_FindEntityByClassnameNearest(const char[] classname, const float origin[3], float radius);
+
+/**
+ * Finds entity by model.
+ * 
+ * @param startentity:	The entity to start from when doing the search
+ * @param model:		Entity model
+ */
+native int ST_FindEntityByModel(int startentity, const char[] model);
+
+/**
+ * Used to iterate all the entities within a sphere.
+ * 
+ * @param startentity:	The entity to start from when doing the search
+ * @param origin:		Center of search radius
+ * @param radius:		Search radius for classname search, 0 to search everywhere
+ */
+native int ST_FindEntityInSphere(int startentity, const float origin[3], float radius);
+
+
+/**
+ * Returns the first entity.
+ */
+native int ST_FirstEntity();
+
+/**
+ * Returns the next entity.
+ * 
+ * @param entity
+ */
+native int ST_NextEntity(int entity);
+
+/**
+ * Finds entity by HammerID.
+ * 
+ * @param hammerid
+ */
+native int ST_FindEntityByHammerID(int hammerid);
+
+/**
+ * Returns entity from its address.
+ * 
+ * @param hammerid
+ */
+native int ST_GetBaseEntity(Address pentity);
+
+
+/**
+ * Resets entity's sequence.
+ * 
+ * @param entity
+ * @param sequence
+ */
+native void ST_ResetSequence(int entity, int sequence);
+
+/**
+ * Resets entity's sequence.
+ * 
+ * @param entity
+ */
+native void ST_ResetSequenceInfo(int entity);
+
+
+/**
+ * Get entity's KeyValue.
+ * 
+ * @param entity
+ * @param key
+ * @param results
+ * @param maxlen
+ */
+native bool ST_GetKeyValue(int entity, const char[] key, char[] results, int maxlen);
+
+/**
+ * Set entity's KeyValue.
+ * 
+ * @param entity
+ * @param key
+ * @param value
+ */
+native bool ST_SetKeyValue(int entity, const char[] key, const char[] value);
+
+/**
+ * Set entity's KeyValue.
+ * 
+ * @param entity
+ * @param key
+ * @param value
+ */
+native bool ST_SetKeyValueFloat(int entity, const char[] key, const float value);
+
+/**
+ * Set entity's KeyValue.
+ * 
+ * @param entity
+ * @param key
+ * @param value
+ */
+native bool ST_SetKeyValueVector(int entity, const char[] key, const float value[3]);
+
 
 #if !defined REQUIRE_EXTENSIONS
 public __ext_INTERFACE_SetNTVOptional()
@@ -194,6 +310,29 @@ public __ext_INTERFACE_SetNTVOptional()
 	MarkNativeAsOptional("CAmmoDefs_GetFlags");
 	MarkNativeAsOptional("CAmmoDefs_GetMaxCarry");
 	MarkNativeAsOptional("CAmmoDefs_Raw");
+	
+	MarkNativeAsOptional("ST_FindEntityProcedural");
+	MarkNativeAsOptional("ST_FindEntityClassNearestFacing");
+	MarkNativeAsOptional("ST_FindEntityNearestFacing");
+	MarkNativeAsOptional("ST_FindEntityByClassnameWithin");
+	MarkNativeAsOptional("ST_FindEntityByClassnameNearest");
+	MarkNativeAsOptional("ST_FindEntityByModel");
+	MarkNativeAsOptional("ST_FindEntityInSphere");
+	MarkNativeAsOptional("ST_FirstEntity");
+	MarkNativeAsOptional("ST_NextEntity");
+	MarkNativeAsOptional("ST_FindEntityByHammerID");
+	MarkNativeAsOptional("ST_GetEntityFromAddress");
+	MarkNativeAsOptional("ST_ResetSequence");
+	MarkNativeAsOptional("ST_ResetSequenceInfo");
+	MarkNativeAsOptional("ST_ClearMultiDamage");
+	MarkNativeAsOptional("ST_ApplyMultiDamage");
+	MarkNativeAsOptional("ST_AddMultiDamage");
+	MarkNativeAsOptional("ST_RadiusDamage");
+	MarkNativeAsOptional("ST_GetKeyValue");
+	MarkNativeAsOptional("ST_ClearMultiDamage");
+	MarkNativeAsOptional("ST_SetKeyValue");
+	MarkNativeAsOptional("ST_SetKeyValueFloat");
+	MarkNativeAsOptional("ST_SetKeyValueVector");
 }
 #endif
 
