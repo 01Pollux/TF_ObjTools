@@ -1,8 +1,6 @@
 #include "serverutils.h"
 #include "dmginfo.h"
 
-class CTakeDamageInfo: public CTakeDmgInfoBuilder {};
-
 #define CELLT_TO_ENTITY(pentity, param) \
 		if(param == -1) \
 		{ \
