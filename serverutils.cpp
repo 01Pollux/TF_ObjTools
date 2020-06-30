@@ -225,7 +225,7 @@ cell_t ST_GetKeyValue(IPluginContext* pContext, const cell_t* params)
 	CBaseEntity* pEntity = gamehelpers->ReferenceToEntity(params[1]);
 	if (!pEntity)
 	{
-		return pContext->ThrowNativeError("Invalid entity index: %i", params[2]);
+		return pContext->ThrowNativeError("Invalid entity index: %i", params[1]);
 	}
 
 	char* name;
@@ -245,7 +245,7 @@ cell_t ST_SetKeyValue(IPluginContext* pContext, const cell_t* params)
 	CBaseEntity* pEntity = gamehelpers->ReferenceToEntity(params[1]);
 	if (!pEntity)
 	{
-		return pContext->ThrowNativeError("Invalid entity index: %i", params[2]);
+		return pContext->ThrowNativeError("Invalid entity index: %i", params[1]);
 	}
 
 	char* name;
@@ -261,7 +261,7 @@ cell_t ST_SetKeyValueFloat(IPluginContext* pContext, const cell_t* params)
 	CBaseEntity* pEntity = gamehelpers->ReferenceToEntity(params[1]);
 	if (!pEntity)
 	{
-		return pContext->ThrowNativeError("Invalid entity index: %i", params[2]);
+		return pContext->ThrowNativeError("Invalid entity index: %i", params[1]);
 	}
 
 	char* name;
@@ -275,7 +275,7 @@ cell_t ST_SetKeyValueVector(IPluginContext* pContext, const cell_t* params)
 	CBaseEntity* pEntity = gamehelpers->ReferenceToEntity(params[1]);
 	if (!pEntity)
 	{
-		return pContext->ThrowNativeError("Invalid entity index: %i", params[2]);
+		return pContext->ThrowNativeError("Invalid entity index: %i", params[1]);
 	}
 
 	char* name;
