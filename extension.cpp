@@ -32,6 +32,7 @@
 #include "extension.h"
 #include "dmginfo.h"
 #include "ammodefs.h"
+#include "serverutils.h"
 #include <convar.h>
 
  /**
@@ -45,6 +46,8 @@ SMEXT_LINK(&g_TF2ObjTools);
 IGameConfig* pConfig = nullptr;
 ISDKTools* sdktools = nullptr;
 IBinTools* bintools = nullptr;
+IServerTools* servertools = nullptr;
+ConVar* phys_pushscale;
 
 ICallWrapper* pAmmoDef;
 HandleType_t g_TakeDmgInfo;
@@ -54,7 +57,7 @@ bool TF2ObjTools::SDK_OnLoad(char* error, size_t maxlength, bool late)
 {
 	if (!gameconfs->LoadGameConfigFile("tf2.objtools", &pConfig, NULL, NULL))
 	{
-		ke::SafeStrcpy(error, maxlength, "Failed to load \"tf2.takedmginfo.txt\"");
+		ke::SafeStrcpy(error, maxlength, "Failed to load \"tf2.objtools.txt\"");
 		return false;
 	}
 	sharesys->AddDependency(myself, "sdktools.ext", true, true);
@@ -62,6 +65,7 @@ bool TF2ObjTools::SDK_OnLoad(char* error, size_t maxlength, bool late)
 
 	sharesys->AddNatives(myself, g_InfoNatives);
 	sharesys->AddNatives(myself, g_AmmoNatives);
+	sharesys->AddNatives(myself, g_ServerNatives);
 
 	g_TakeDmgInfo = handlesys->CreateType("CTakeDamageInfo", &g_CTakeDmgInfoHandler, 0, NULL, NULL, myself->GetIdentity(), NULL);
 	return true;
@@ -82,6 +86,8 @@ void TF2ObjTools::SDK_OnAllLoaded()
 {
 	SM_GET_LATE_IFACE(SDKTOOLS, sdktools);
 	SM_GET_LATE_IFACE(BINTOOLS, bintools);
+
+	phys_pushscale = g_pCVar->FindVar("phys_pushscale");
 }
 
 bool TF2ObjTools::QueryInterfaceDrop(SMInterface* pInterface)
@@ -99,6 +105,7 @@ bool TF2ObjTools::QueryInterfaceDrop(SMInterface* pInterface)
 
 bool TF2ObjTools::SDK_OnMetamodLoad(ISmmAPI* ismm, char* error, size_t maxlen, bool late)
 {
+	GET_V_IFACE_CURRENT(GetServerFactory, servertools, IServerTools, VSERVERTOOLS_INTERFACE_VERSION);
 	GET_V_IFACE_CURRENT(GetEngineFactory, g_pCVar, ICvar, CVAR_INTERFACE_VERSION);
 	ConVar_Register(0, this);
 	return true;
