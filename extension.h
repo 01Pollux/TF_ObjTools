@@ -32,28 +32,16 @@
 #ifndef _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_
 #define _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_
 
- /**
-  * @file extension.h
-  * @brief Sample extension code header.
-  */
+/**
+ * @file extension.h
+ * @brief Sample extension code header.
+ */
 
 #include "smsdk_ext.h"
 #include <basehandle.h>
 #include <ISDKTools.h>
 #include <IBinTools.h>
 
-
-enum HookType
-{
-	TF2_OnTakeDamage,
-	TF2_OnTakeDamageAlive,
-	TF2_OnTakeDamagePost,
-	TF2_OnTakeDamageAlivePost,
-
-	TF2_MAXHOOKS,
-};
-
-class CTakeDmgInfoBuilder;
 class TF2ObjTools: public SDKExtension,
 					public IConCommandBaseAccessor
 {
