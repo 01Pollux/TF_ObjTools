@@ -95,7 +95,7 @@ const sp_nativeinfo_t g_InfoNatives[] =
 	{"CTakeDamageInfo.DeathNotice", CTakeDamageInfo_DeathNotice},
 	{"CTakeDamageInfo.CalcExplosiveDmgForce", CalcExplosiveDmgForce},
 	{"CTakeDamageInfo.CalcBulletDamageForce", CalcBulletDamageForce},
-	{"CTakeDamageInfo.CalcMeleeDamageForce", CalcBulletDamageForce},
+	{"CTakeDamageInfo.CalcMeleeDamageForce", CalcMeleeDamageForce},
 	{NULL, NULL},
 };
 
