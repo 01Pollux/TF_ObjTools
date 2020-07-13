@@ -9,7 +9,6 @@ sourceFiles = [
   'ammodefs.cpp',
   'serverutils.cpp',
   'dmginfo.cpp',
-  'serverutils.cpp'
 ]
 
 ###############
