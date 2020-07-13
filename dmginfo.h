@@ -2,6 +2,7 @@
 
 #include <ammodef.h>
 #include <mathlib/vector.h>
+#include <vtable_hook_helper.h>
 #include "extension.h"
 
 enum CritType {
@@ -63,6 +64,36 @@ enum TakeDmgOffset
 	eCritType
 };
 
+enum HookType
+{
+	GenericPre,
+	AlivePre,
+	GenericPost,
+	AlivePost,
+
+	MaxHooks
+};
+
+
+struct IHookP
+{
+public:
+	int ref;
+	int hookid;
+	ke::Vector<IPluginFunction*> pCallbacks;
+
+public:
+	IHookP(int id, int ref): hookid(hookid), ref(ref) { };
+	~IHookP()
+	{
+		if (hookid)
+		{
+			SH_REMOVE_HOOK_ID(hookid);
+			hookid = 0;
+		}
+	}
+};
+
 cell_t CTakeDamageInfo_CTakeDamageInfo(IPluginContext* pContext, const cell_t* params);
 cell_t CTakeDamageInfo_GetInt(IPluginContext* pContext, const cell_t* params);
 cell_t CTakeDamageInfo_SetInt(IPluginContext* pContext, const cell_t* params);
@@ -78,6 +109,11 @@ cell_t CTakeDamageInfo_DeathNotice(IPluginContext* pContext, const cell_t* param
 cell_t CalcExplosiveDmgForce(IPluginContext* pContext, const cell_t* params);
 cell_t CalcBulletDamageForce(IPluginContext* pContext, const cell_t* params);
 cell_t CalcMeleeDamageForce(IPluginContext* pContext, const cell_t* params);
+
+cell_t HookRawOnTakeDamage(IPluginContext* pContext, const cell_t* params);
+cell_t UnhookRawOnTakeDamage(IPluginContext* pContext, const cell_t* params);
+
+CTakeDmgInfoBuilder* ReadDamageInfoFromHandle(IPluginContext* pContext, cell_t Param);
 
 const sp_nativeinfo_t g_InfoNatives[] =
 {
@@ -95,7 +131,10 @@ const sp_nativeinfo_t g_InfoNatives[] =
 	{"CTakeDamageInfo.DeathNotice", CTakeDamageInfo_DeathNotice},
 	{"CTakeDamageInfo.CalcExplosiveDmgForce", CalcExplosiveDmgForce},
 	{"CTakeDamageInfo.CalcBulletDamageForce", CalcBulletDamageForce},
-	{"CTakeDamageInfo.CalcMeleeDamageForce", CalcMeleeDamageForce},
+	{"CTakeDamageInfo.CalcMeleeDamageForce", CalcBulletDamageForce},
+
+	{"HookRawOnTakeDamage", HookRawOnTakeDamage},
+	{"UnhookRawOnTakeDamage", UnhookRawOnTakeDamage},
 	{NULL, NULL},
 };
 
@@ -110,3 +149,4 @@ CTakeDmgInfoBuilder* ReadDamageInfoFromHandle(IPluginContext* pContext, cell_t P
 extern CTakeDmgInfoHandler g_CTakeDmgInfoHandler;
 extern HandleType_t g_TakeDmgInfo;
 extern ConVar* phys_pushscale;
+extern ke::Vector<IHookP*> IHookedEnt[MaxHooks];
