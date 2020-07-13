@@ -197,7 +197,7 @@ cell_t ST_GetBaseEntity(IPluginContext* pContext, const cell_t* params)
 
 cell_t ST_ResetSequence(IPluginContext* pContext, const cell_t* params)
 {
-	CBaseAnimating* pEntity = (CBaseAnimating*)gamehelpers->ReferenceToEntity(params[1]);
+	CBaseAnimating* pEntity = (CBaseAnimating*)(gamehelpers->ReferenceToEntity(params[1]));
 	if (!pEntity)
 	{
 		return pContext->ThrowNativeError("Invalid entity index: %i", params[1]);
@@ -209,7 +209,7 @@ cell_t ST_ResetSequence(IPluginContext* pContext, const cell_t* params)
 
 cell_t ST_ResetSequenceInfo(IPluginContext* pContext, const cell_t* params)
 {
-	CBaseAnimating* pEntity = (CBaseAnimating*)gamehelpers->ReferenceToEntity(params[1]);
+	CBaseAnimating* pEntity = (CBaseAnimating*)(gamehelpers->ReferenceToEntity(params[1]));
 	if (!pEntity)
 	{
 		return pContext->ThrowNativeError("Invalid entity index: %i", params[1]);
