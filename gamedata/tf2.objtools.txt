@@ -18,6 +18,16 @@
 				"linux"		"243"
 				"windows"	"241"
 			}
+			"OnTakeDamage"
+			{
+				"linux"		"63"
+				"windows"	"62"
+			}
+			"OnTakeDamageAlive"
+			{
+				"linux"		"276"
+				"windows"	"275"
+			}
 		}
 	}
 }
