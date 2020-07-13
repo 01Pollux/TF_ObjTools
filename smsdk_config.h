@@ -1,7 +1,6 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * TF2 CTakeDamageInfo Object
  * Copyright (C) 2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
@@ -39,10 +38,10 @@
 
   /* Basic information exposed publicly */
 #define SMEXT_CONF_NAME			"[TF2] ObjTools"
-#define SMEXT_CONF_DESCRIPTION	"useful tools"
+#define SMEXT_CONF_DESCRIPTION	"Useful Tools"
 #define SMEXT_CONF_VERSION		"1.0.0"
 #define SMEXT_CONF_AUTHOR		"01Pollux"
-#define SMEXT_CONF_URL			"https://github.com/01Pollux/TF_CTakeDamageInfo"
+#define SMEXT_CONF_URL			"https://github.com/01Pollux/TF_ObjTools"
 #define SMEXT_CONF_LOGTAG		"TF_OBJTOOLS"
 #define SMEXT_CONF_LICENSE		"GPL"
 #define SMEXT_CONF_DATESTRING	__DATE__
@@ -59,7 +58,7 @@
 #define SMEXT_CONF_METAMOD		
 
 /** Enable interfaces you want to use here by uncommenting lines */
-//#define SMEXT_ENABLE_FORWARDSYS
+#define SMEXT_ENABLE_FORWARDSYS
 #define SMEXT_ENABLE_HANDLESYS
 #define SMEXT_ENABLE_PLAYERHELPERS
 //#define SMEXT_ENABLE_DBMANAGER
@@ -71,7 +70,7 @@
 //#define SMEXT_ENABLE_LIBSYS
 //#define SMEXT_ENABLE_MENUS
 //#define SMEXT_ENABLE_ADTFACTORY
-//#define SMEXT_ENABLE_PLUGINSYS
+#define SMEXT_ENABLE_PLUGINSYS
 //#define SMEXT_ENABLE_ADMINSYS
 //#define SMEXT_ENABLE_TEXTPARSERS
 //#define SMEXT_ENABLE_USERMSGS
