@@ -39,11 +39,15 @@
 
 #include "smsdk_ext.h"
 #include <basehandle.h>
+#include <ISDKHooks.h>
 #include <ISDKTools.h>
-#include <IBinTools.h>
 
-class TF2ObjTools: public SDKExtension,
-					public IConCommandBaseAccessor
+enum HookType;
+class TF2ObjTools:
+				public SDKExtension,
+				public IConCommandBaseAccessor,
+				public IPluginsListener,
+				public ISMEntityListener
 {
 public:
 	bool SDK_OnLoad(char* error, size_t maxlength, bool late);
@@ -55,10 +59,20 @@ public:
 
 public:
 	bool RegisterConCommandBase(ConCommandBase* pVar);
+
+public:
+	void OnPluginUnloaded(IPlugin* plugin);
+
+public:
+	void OnEntityDestroyed(CBaseEntity* pEntity);
+
+public:
+	void HookEnt(int entity, IPluginFunction* pCallback, HookType type);
+	void UnHookEnt(int entity, IPluginFunction* pCallback, HookType type);
 };
 
 extern IGameConfig* pConfig;
 extern ISDKTools* sdktools;
-extern IBinTools* bintools;
+extern TF2ObjTools g_TF2ObjTools;
 
 #endif // _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_
