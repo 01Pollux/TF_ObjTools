@@ -26,25 +26,25 @@ cell_t ST_SetKeyValueFloat(IPluginContext* pContext, const cell_t* params);
 cell_t ST_SetKeyValueVector(IPluginContext* pContext, const cell_t* params);
 
 const sp_nativeinfo_t g_ServerNatives[] = {
-	{"ST_FindEntityProcedural", ST_FindEntityProcedural},
-	{"ST_FindEntityClassNearestFacing", ST_FindEntityClassNearestFacing},
-	{"ST_FindEntityNearestFacing", ST_FindEntityNearestFacing},
-	{"ST_FindEntityByClassnameWithin", ST_FindEntityByClassnameWithin},
-	{"ST_FindEntityByClassnameNearest", ST_FindEntityByClassnameNearest},
-	{"ST_FindEntityByModel", ST_FindEntityByModel},
-	{"ST_FindEntityInSphere", ST_FindEntityInSphere},
+	{"ServerTools.FindEntityProcedural", ST_FindEntityProcedural},
+	{"ServerTools.FindEntityClassNearestFacing", ST_FindEntityClassNearestFacing},
+	{"ServerTools.FindEntityNearestFacing", ST_FindEntityNearestFacing},
+	{"ServerTools.FindEntityByClassnameWithin", ST_FindEntityByClassnameWithin},
+	{"ServerTools.FindEntityByClassnameNearest", ST_FindEntityByClassnameNearest},
+	{"ServerTools.FindEntityByModel", ST_FindEntityByModel},
+	{"ServerTools.FindEntityInSphere", ST_FindEntityInSphere},
 
-	{"ST_FirstEntity", ST_FirstEntity},
-	{"ST_NextEntity", ST_NextEntity},
-	{"ST_FindEntityByHammerID", ST_FindEntityByHammerID},
-	{"ST_GetBaseEntity", ST_GetBaseEntity},
+	{"ServerTools.FirstEntity", ST_FirstEntity},
+	{"ServerTools.NextEntity", ST_NextEntity},
+	{"ServerTools.FindEntityByHammerID", ST_FindEntityByHammerID},
+	{"ServerTools.GetBaseEntity", ST_GetBaseEntity},
 
-	{"ST_ResetSequence", ST_ResetSequence},
-	{"ST_ResetSequenceInfo", ST_ResetSequenceInfo},
+	{"ServerTools.ResetSequence", ST_ResetSequence},
+	{"ServerTools.ResetSequenceInfo", ST_ResetSequenceInfo},
 
-	{"ST_GetKeyValue", ST_GetKeyValue},
-	{"ST_SetKeyValue", ST_SetKeyValue},
-	{"ST_SetKeyValueFloat", ST_SetKeyValueFloat},
-	{"ST_SetKeyValueVector", ST_SetKeyValueVector},
+	{"ServerTools.GetKeyValue", ST_GetKeyValue},
+	{"ServerTools.SetKeyValue", ST_SetKeyValue},
+	{"ServerTools.SetKeyValueFloat", ST_SetKeyValueFloat},
+	{"ServerTools.SetKeyValueVector", ST_SetKeyValueVector},
 	{NULL, NULL},
 };
