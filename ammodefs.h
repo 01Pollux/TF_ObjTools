@@ -15,13 +15,13 @@ cell_t CAmmoDefs_GetMaxCarry(IPluginContext* pContext, const cell_t* params);
 cell_t CAmmoDefs_GetRaw(IPluginContext* pContext, const cell_t* params);
 
 const sp_nativeinfo_t g_AmmoNatives[] = {
-	{"CAmmoDefs_FindIndex", CAmmoDefs_FindIndex},
-	{"CAmmoDefs_GetName", CAmmoDefs_GetName},
-	{"CAmmoDefs_DamageType", CAmmoDefs_GetDamageType},
-	{"CAmmoDefs_eTracerType", CAmmoDefs_GeteTracerType},
-	{"CAmmoDefs_DamageForce", CAmmoDefs_GetDamageForce},
-	{"CAmmoDefs_GetFlags", CAmmoDefs_GetFlags},
-	{"CAmmoDefs_GetMaxCarry", CAmmoDefs_GetMaxCarry},
-	{"CAmmoDefs_Raw", CAmmoDefs_GetRaw},
+	{"CAmmoDefs.FindIndex", CAmmoDefs_FindIndex},
+	{"CAmmoDefs.GetName", CAmmoDefs_GetName},
+	{"CAmmoDefs.DamageType", CAmmoDefs_GetDamageType},
+	{"CAmmoDefs.eTracerType", CAmmoDefs_GeteTracerType},
+	{"CAmmoDefs.DamageForce", CAmmoDefs_GetDamageForce},
+	{"CAmmoDefs.GetFlags", CAmmoDefs_GetFlags},
+	{"CAmmoDefs.GetMaxCarry", CAmmoDefs_GetMaxCarry},
+	{"CAmmoDefs.Raw", CAmmoDefs_GetRaw},
 	{NULL, NULL},
 };
