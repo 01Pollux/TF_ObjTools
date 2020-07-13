@@ -19,7 +19,7 @@ CTakeDmgInfoBuilder* ReadDamageInfoFromHandle(IPluginContext* pContext, cell_t P
 	HandleSecurity sec(NULL, myself->GetIdentity());
 
 	CTakeDmgInfoBuilder* info = NULL;
-	if ((err = handlesys->ReadHandle(hndl, g_TakeDmgInfo, &sec, (void**)&info)) != HandleError_None) 
+	if ((err = handlesys->ReadHandle(hndl, g_TakeDmgInfo, &sec, (void**)&info)) != HandleError_None)
 	{
 		pContext->ThrowNativeError("Invalid CTakeDmgInfo Handle %x (error %d)", hndl, err);
 		return NULL;
@@ -50,11 +50,7 @@ cell_t CTakeDamageInfo_GetData(IPluginContext* pContext, const cell_t* params)
 		return NULL;
 	}
 
-#ifdef PLATFORM_X86
 	return reinterpret_cast<cell_t>(infos);
-#else
-	return smutils->ToPseudoAddress((void*)infos);
-#endif
 }
 
 cell_t CTakeDamageInfo_SetData(IPluginContext* pContext, const cell_t* params)
@@ -232,7 +228,6 @@ cell_t CTakeDamageInfo_GetInt(IPluginContext* pContext, const cell_t* params)
 	default:
 		return pContext->ThrowNativeError("Invalid data type %i for CTakeDamageInfo_Int", params[2]);
 	}
-	return 0;
 }
 
 cell_t CTakeDamageInfo_SetInt(IPluginContext* pContext, const cell_t* params)
@@ -274,7 +269,6 @@ cell_t CTakeDamageInfo_SetInt(IPluginContext* pContext, const cell_t* params)
 	default:
 		return pContext->ThrowNativeError("Invalid data type %i for CTakeDamageInfo_Int", params[2]);
 	}
-	return 0;
 }
 
 cell_t CTakeDamageInfo_GetFloat(IPluginContext* pContext, const cell_t* params)
@@ -282,7 +276,7 @@ cell_t CTakeDamageInfo_GetFloat(IPluginContext* pContext, const cell_t* params)
 	CTakeDmgInfoBuilder* info = ReadDamageInfoFromHandle(pContext, params[1]);
 	if (!info)
 	{
-		return 0.0;
+		return sp_ftoc(0);
 	}
 	TakeDmgOffset offset = static_cast<TakeDmgOffset>(params[2]);
 	switch (offset)
@@ -301,7 +295,6 @@ cell_t CTakeDamageInfo_GetFloat(IPluginContext* pContext, const cell_t* params)
 	default:
 		return pContext->ThrowNativeError("Invalid data type %i for CTakeDamageInfo_Float", params[2]);
 	}
-	return 0.0;
 }
 
 cell_t CTakeDamageInfo_SetFloat(IPluginContext* pContext, const cell_t* params)
@@ -334,7 +327,6 @@ cell_t CTakeDamageInfo_SetFloat(IPluginContext* pContext, const cell_t* params)
 	default:
 		return pContext->ThrowNativeError("Invalid data type %i for CTakeDamageInfo_Float", params[2]);
 	}
-	return 0;
 }
 
 cell_t CTakeDamageInfo_GetVector(IPluginContext* pContext, const cell_t* params)
@@ -378,7 +370,6 @@ cell_t CTakeDamageInfo_GetVector(IPluginContext* pContext, const cell_t* params)
 	default:
 		return pContext->ThrowNativeError("Invalid data type %i for CTakeDamageInfo_Vector", params[2]);
 	}
-	return 0;
 }
 
 cell_t CTakeDamageInfo_SetVector(IPluginContext* pContext, const cell_t* params)
@@ -416,7 +407,6 @@ cell_t CTakeDamageInfo_SetVector(IPluginContext* pContext, const cell_t* params)
 	default:
 		return pContext->ThrowNativeError("Invalid data type %i for CTakeDamageInfo_Vector", params[2]);
 	}
-	return 0;
 }
 
 cell_t CTakeDamageInfo_GetEnt(IPluginContext* pContext, const cell_t* params)
@@ -431,18 +421,17 @@ cell_t CTakeDamageInfo_GetEnt(IPluginContext* pContext, const cell_t* params)
 	switch (offset)
 	{
 	case hInflictor:
-		return info->m_hInflictor.GetEntryIndex();
+		return info->m_hInflictor.IsValid() ? info->m_hInflictor.GetEntryIndex() : -1;
 	case hAttacker:
-		return info->m_hAttacker.GetEntryIndex();
+		return info->m_hAttacker.IsValid() ? info->m_hAttacker.GetEntryIndex() : -1;
 	case hDamageBonusProvider:
-		return info->m_hDamageBonusProvider.GetEntryIndex();
+		return info->m_hDamageBonusProvider.IsValid() ? info->m_hDamageBonusProvider.GetEntryIndex() : -1;
 	case hWeapon:
-		return info->m_hWeapon.GetEntryIndex();
+		return info->m_hWeapon.IsValid() ? info->m_hWeapon.GetEntryIndex() : -1;
 
 	default:
 		return pContext->ThrowNativeError("Invalid data type %i for CTakeDamageInfo_Ent", params[2]);
 	}
-	return -1;
 }
 
 cell_t CTakeDamageInfo_SetEnt(IPluginContext* pContext, const cell_t* params)
@@ -450,33 +439,93 @@ cell_t CTakeDamageInfo_SetEnt(IPluginContext* pContext, const cell_t* params)
 	CTakeDmgInfoBuilder* info = ReadDamageInfoFromHandle(pContext, params[1]);
 	if (!info)
 	{
-		return -1;
+		return 0;
 	}
 
-	CBaseEntity* pEnt = gamehelpers->ReferenceToEntity(params[3]);
-	if (!pEnt)
+	CBaseEntity* pEnt = NULL;
+	if (params[3] != -1)
 	{
-		return pContext->ThrowNativeError("Invalid entity index %i", params[3]);
+		pEnt = gamehelpers->ReferenceToEntity(params[3]);
+		if (!pEnt)
+		{
+			return pContext->ThrowNativeError("Invalid entity index %i", params[3]);
+		}
 	}
 
 	TakeDmgOffset offset = static_cast<TakeDmgOffset>(params[2]);
 	switch (offset)
 	{
 	case hInflictor:
-		info->m_hInflictor = ((IHandleEntity*)(intp)pEnt)->GetRefEHandle();
+		info->m_hInflictor = reinterpret_cast<IHandleEntity*>(pEnt)->GetRefEHandle();
 		return 1;
 	case hAttacker:
-		info->m_hAttacker = ((IHandleEntity*)(intp)pEnt)->GetRefEHandle();
+		info->m_hAttacker = reinterpret_cast<IHandleEntity*>(pEnt)->GetRefEHandle();
 		return 1;
 	case hDamageBonusProvider:
-		info->m_hDamageBonusProvider = ((IHandleEntity*)(intp)pEnt)->GetRefEHandle();
+		info->m_hDamageBonusProvider = reinterpret_cast<IHandleEntity*>(pEnt)->GetRefEHandle();
 		return 1;
 	case hWeapon:
-		info->m_hWeapon = ((IHandleEntity*)(intp)pEnt)->GetRefEHandle();
+		info->m_hWeapon = reinterpret_cast<IHandleEntity*>(pEnt)->GetRefEHandle();
 		return 1;
 
 	default:
 		return pContext->ThrowNativeError("Invalid data type %i for CTakeDamageInfo_Ent", params[2]);
 	}
-	return -1;
+}
+
+
+static inline bool ValidHook(HookType h)
+{
+	if (h >= MaxHooks || h < 0) {
+		return false;
+	}
+	return true;
+}
+
+cell_t HookRawOnTakeDamage(IPluginContext* pContext, const cell_t* params)
+{
+	cell_t entity = params[1];
+	if (!gamehelpers->ReferenceToEntity(entity))
+	{
+		return pContext->ThrowNativeError("Invalid entity index: %i", entity);
+	}
+
+	IPluginFunction* pFunction = pContext->GetFunctionById(params[2]);
+	if (!pFunction)
+	{
+		return pContext->ThrowNativeError("Invalid Function id: %x", pFunction);
+	}
+
+	HookType type = static_cast<HookType>(params[3]);
+	if (!ValidHook(type))
+	{
+		return pContext->ThrowNativeError("Invalid HookType: %i", type);
+	}
+
+	g_TF2ObjTools.HookEnt(entity, pFunction, type);
+	return 1;
+}
+
+cell_t UnhookRawOnTakeDamage(IPluginContext* pContext, const cell_t* params)
+{
+	cell_t entity = params[1];
+	if (!gamehelpers->ReferenceToEntity(entity))
+	{
+		return pContext->ThrowNativeError("Invalid entity index: %i", entity);
+	}
+
+	IPluginFunction* pFunction = pContext->GetFunctionById(params[2]);
+	if (!pFunction)
+	{
+		return pContext->ThrowNativeError("Invalid Function id: %x", pFunction);
+	}
+
+	HookType type = static_cast<HookType>(params[3]);
+	if (!ValidHook(type))
+	{
+		return pContext->ThrowNativeError("Invalid HookType: %i", type);
+	}
+
+	g_TF2ObjTools.UnHookEnt(entity, pFunction, type);
+	return 1;
 }
