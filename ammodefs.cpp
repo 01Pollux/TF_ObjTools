@@ -123,11 +123,7 @@ cell_t CAmmoDefs_GetRaw(IPluginContext* pContext, const cell_t* params)
 	if (!table) {
 		return pContext->ThrowNativeError("Invalid AmmoDef table!");
 	}
-#ifdef PLATFORM_X86
 	return reinterpret_cast<cell_t>(table);
-#else
-	return smutils->ToPseudoAddress((void*)table);
-#endif
 }
 
 CON_COMMAND(dump_ammodef, "Dump all ammodef infos")
