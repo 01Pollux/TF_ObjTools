@@ -134,211 +134,244 @@ methodmap CTakeDamageInfo < Handle {
 	}
 }
 
+typeset CTakeDmgInfoCallback
+{
+	function Action(int victim, CTakeDamageInfo& infos);
+	function void(int victim, CTakeDamageInfo infos);
+}
+
+enum CTakeDmgInfoType
+{
+	GenericPre,
+	AlivePre,
+	GenericPost,
+	AlivePost
+};
+
+native void HookRawOnTakeDamage(int client, CTakeDmgInfoCallback callback, CTakeDmgInfoType type);
+native void UnhookRawOnTakeDamage(int client, CTakeDmgInfoCallback callback, CTakeDmgInfoType type);
+
 enum AmmoFlags_t
 {
 	AMMO_FORCE_DROP_IF_CARRIED = 0x1,
 	AMMO_INTERPRET_PLRDAMAGE_AS_DAMAGE_TO_PLAYER = 0x2
 };
 
-native int CAmmoDefs_FindIndex(const char[] name);
-native void CAmmoDefs_GetName(int index, char[] name, int length);
-native int CAmmoDefs_GetDamageType(int index);
-native int CAmmoDefs_GeteTracerType(int index);
-native float CAmmoDefs_GetDamageForce(int index);
-native AmmoFlags_t CAmmoDefs_GetFlags(int index);
-native int CAmmoDefs_GetMaxCarry(int index);
-native Address CAmmoDefs_Raw();	//CAmmoDef* GetAmmoDef();
+methodmap CAmmoDefs
+{
+	public static native int FindIndex(const char[] name);
+	
+	public static native void GetName(int index, char[] name, int length);
+	
+	public static native int GetDamageType(int index);
+	
+	public static native int GeteTracerType(int index);
+	
+	public static native float GetDamageForce(int index);
+	
+	public static native AmmoFlags_t GetFlags(int index);
+	
+	public static native int GetMaxCarry(int index);
+	
+	public static native Address Raw();	//CAmmoDef* GetAmmoDef();
+}
 
-
-/**
- * Finds an entity given a procedural name.
- * 
- * @param name: 		The procedural name to search for, should start with '!'
- * @param searchent:	The entity to start from when doing the search
- * @param activator:	The activator entity if this was called from an input
- * @param caller
- */
-native int ST_FindEntityProcedural(const char[] name, int searchent, int activator = -1, int caller = -1);
-
-/**
- * Find the nearest entity along the facing direction from the given origin
- * within the angular threshold (ignores worldspawn) with the given classname.
- * 
- * @param origin
- * @param facing
- * @param threshold
- * @param classname
- */
-native int ST_FindEntityClassNearestFacing(const float origin[3], const float facing[3], float threshold, const char[] classname);
-
-/**
- * Find the nearest entity along the facing direction from the given origin
- * within the angular threshold (ignores worldspawn).
- * 
- * @param origin
- * @param facing
- * @param threshold
- */
-native int ST_FindEntityNearestFacing(const float origin[3], const float facing[3], float threshold);
-
-/**
- * Finds the first entity within radius distance by class name.
- * 
- * @param startentity:	The entity to start from when doing the search
- * @param classname:	Entity class name
- * @param origin:		Center of search radius
- * @param radius:		Search radius for classname search, 0 to search everywhere
- */
-native int ST_FindEntityByClassnameWithin(int startentity, const char[] classname, const float origin[3], float radius);
-
-/**
- * Finds the nearest entity by class name withing given search radius.
- * 
- * @param classname:	Entity class name
- * @param origin:		Center of search radius
- * @param radius:		Search radius for classname search, 0 to search everywhere
- */
-native int ST_FindEntityByClassnameNearest(const char[] classname, const float origin[3], float radius);
-
-/**
- * Finds entity by model.
- * 
- * @param startentity:	The entity to start from when doing the search
- * @param model:		Entity model
- */
-native int ST_FindEntityByModel(int startentity, const char[] model);
-
-/**
- * Used to iterate all the entities within a sphere.
- * 
- * @param startentity:	The entity to start from when doing the search
- * @param origin:		Center of search radius
- * @param radius:		Search radius for classname search, 0 to search everywhere
- */
-native int ST_FindEntityInSphere(int startentity, const float origin[3], float radius);
-
-
-/**
- * Returns the first entity.
- */
-native int ST_FirstEntity();
-
-/**
- * Returns the next entity.
- * 
- * @param entity
- */
-native int ST_NextEntity(int entity);
-
-/**
- * Finds entity by HammerID.
- * 
- * @param hammerid
- */
-native int ST_FindEntityByHammerID(int hammerid);
-
-/**
- * Returns entity from its address.
- * 
- * @param pentity
- */
-native int ST_GetBaseEntity(Address pentity);
-
-
-/**
- * Resets entity's sequence.
- * 
- * @param entity
- * @param sequence
- */
-native void ST_ResetSequence(int entity, int sequence);
-
-/**
- * Resets entity's sequence.
- * 
- * @param entity
- */
-native void ST_ResetSequenceInfo(int entity);
-
-
-/**
- * Get entity's KeyValue.
- * 
- * @param entity
- * @param key
- * @param results
- * @param maxlen
- */
-native bool ST_GetKeyValue(int entity, const char[] key, char[] results, int maxlen);
-
-/**
- * Set entity's KeyValue.
- * 
- * @param entity
- * @param key
- * @param value
- */
-native bool ST_SetKeyValue(int entity, const char[] key, const char[] value);
-
-/**
- * Set entity's KeyValue.
- * 
- * @param entity
- * @param key
- * @param value
- */
-native bool ST_SetKeyValueFloat(int entity, const char[] key, const float value);
-
-/**
- * Set entity's KeyValue.
- * 
- * @param entity
- * @param key
- * @param value
- */
-native bool ST_SetKeyValueVector(int entity, const char[] key, const float value[3]);
+methodmap ServerTools
+{
+	/**
+	 * Finds an entity given a procedural name.
+	 * 
+	 * @param name: 		The procedural name to search for, should start with '!'
+	 * @param searchent:	The entity to start from when doing the search
+	 * @param activator:	The activator entity if this was called from an input
+	 * @param caller
+	 */
+	public static native int FindEntityProcedural(const char[] name, int searchent, int activator = -1, int caller = -1);
+		
+	/**
+	 * Find the nearest entity along the facing direction from the given origin
+	 * within the angular threshold (ignores worldspawn).
+	 * 
+	 * @param origin
+	 * @param facing
+	 * @param threshold
+	 */
+	public static native int FindEntityNearestFacing(const float origin[3], const float facing[3], float threshold);
+	
+	/**
+	 * Finds the first entity within radius distance by class name.
+	 * 
+	 * @param startentity:	The entity to start from when doing the search
+	 * @param classname:	Entity class name
+	 * @param origin:		Center of search radius
+	 * @param radius:		Search radius for classname search, 0 to search everywhere
+	 */
+	public static native int FindEntityByClassnameWithin(int startentity, const char[] classname, const float origin[3], float radius);
+	
+	/**
+	 * Finds the nearest entity by class name withing given search radius.
+	 * 
+	 * @param classname:	Entity class name
+	 * @param origin:		Center of search radius
+	 * @param radius:		Search radius for classname search, 0 to search everywhere
+	 */
+	public static native int FindEntityByClassnameNearest(const char[] classname, const float origin[3], float radius);
+	
+	/**
+	 * Finds entity by model.
+	 * 
+	 * @param startentity:	The entity to start from when doing the search
+	 * @param model:		Entity model
+	 */
+	public static native int FindEntityByModel(int startentity, const char[] model);
+	
+	/**
+	 * Used to iterate all the entities within a sphere.
+	 * 
+	 * @param startentity:	The entity to start from when doing the search
+	 * @param origin:		Center of search radius
+	 * @param radius:		Search radius for classname search, 0 to search everywhere
+	 */
+	public static native int FindEntityInSphere(int startentity, const float origin[3], float radius);
+	
+	
+	/**
+	 * Returns the first entity.
+	 */
+	public static native int FirstEntity();
+	
+	/**
+	 * Returns the next entity.
+	 * 
+	 * @param entity
+	 */
+	public static native int NextEntity(int entity);
+	
+	/**
+	 * Finds entity by HammerID.
+	 * 
+	 * @param hammerid
+	 */
+	public static native int FindEntityByHammerID(int hammerid);
+	
+	/**
+	 * Returns entity from its address.
+	 * 
+	 * @param hammerid
+	 */
+	public static native int GetBaseEntity(Address pentity);
+	
+	
+	/**
+	 * Resets entity's sequence.
+	 * 
+	 * @param entity
+	 * @param sequence
+	 */
+	public static native void ResetSequence(int entity, int sequence);
+	
+	/**
+	 * Resets entity's sequence.
+	 * 
+	 * @param entity
+	 */
+	public static native void ResetSequenceInfo(int entity);
+	
+	
+	/**
+	 * Get entity's KeyValue.
+	 * 
+	 * @param entity
+	 * @param key
+	 * @param results
+	 * @param maxlen
+	 */
+	public static native bool GetKeyValue(int entity, const char[] key, char[] results, int maxlen);
+	
+	/**
+	 * Set entity's KeyValue.
+	 * 
+	 * @param entity
+	 * @param key
+	 * @param value
+	 */
+	public static native bool SetKeyValue(int entity, const char[] key, const char[] value);
+	
+	/**
+	 * Set entity's KeyValue.
+	 * 
+	 * @param entity
+	 * @param key
+	 * @param value
+	 */
+	public static native bool SetKeyValueFloat(int entity, const char[] key, const float value);
+	
+	/**
+	 * Set entity's KeyValue.
+	 * 
+	 * @param entity
+	 * @param key
+	 * @param value
+	 */
+	public static native bool SetKeyValueVector(int entity, const char[] key, const float value[3]);
+}
 
 
 #if !defined REQUIRE_EXTENSIONS
 public __ext_INTERFACE_SetNTVOptional()
 {
-	MarkNativeAsOptional("CAmmoDefs_FindIndex");
-	MarkNativeAsOptional("CAmmoDefs_GetName");
-	MarkNativeAsOptional("CAmmoDefs_GetDamageType");
-	MarkNativeAsOptional("CAmmoDefs_GeteTracerType");
-	MarkNativeAsOptional("CAmmoDefs_GetDamageForce");
-	MarkNativeAsOptional("CAmmoDefs_GetFlags");
-	MarkNativeAsOptional("CAmmoDefs_GetMaxCarry");
-	MarkNativeAsOptional("CAmmoDefs_Raw");
+	MarkNativeAsOptional("CTakeDamageInfo.CTakeDamageInfo");
+	MarkNativeAsOptional("CTakeDamageInfo.ReadInt");
+	MarkNativeAsOptional("CTakeDamageInfo.StoreInt");
+	MarkNativeAsOptional("CTakeDamageInfo.ReadFloat");
+	MarkNativeAsOptional("CTakeDamageInfo.StoreFloat");
+	MarkNativeAsOptional("CTakeDamageInfo.ReadVector");
+	MarkNativeAsOptional("CTakeDamageInfo.StoreVector");
+	MarkNativeAsOptional("CTakeDamageInfo.ReadEnt");
+	MarkNativeAsOptional("CTakeDamageInfo.StoreEnt");
+	MarkNativeAsOptional("CTakeDamageInfo.DeathNotice");
+	MarkNativeAsOptional("CTakeDamageInfo.Infos.set");
+	MarkNativeAsOptional("CTakeDamageInfo.Infos.set");
+	MarkNativeAsOptional("CTakeDamageInfo.CalcExplosiveDmgForce");
+	MarkNativeAsOptional("CTakeDamageInfo.CalcBulletDamageForce");
+	MarkNativeAsOptional("CTakeDamageInfo.CalcMeleeDamageForce");
 	
-	MarkNativeAsOptional("ST_FindEntityProcedural");
-	MarkNativeAsOptional("ST_FindEntityClassNearestFacing");
-	MarkNativeAsOptional("ST_FindEntityNearestFacing");
-	MarkNativeAsOptional("ST_FindEntityByClassnameWithin");
-	MarkNativeAsOptional("ST_FindEntityByClassnameNearest");
-	MarkNativeAsOptional("ST_FindEntityByModel");
-	MarkNativeAsOptional("ST_FindEntityInSphere");
-	MarkNativeAsOptional("ST_FirstEntity");
-	MarkNativeAsOptional("ST_NextEntity");
-	MarkNativeAsOptional("ST_FindEntityByHammerID");
-	MarkNativeAsOptional("ST_GetEntityFromAddress");
-	MarkNativeAsOptional("ST_ResetSequence");
-	MarkNativeAsOptional("ST_ResetSequenceInfo");
-	MarkNativeAsOptional("ST_ClearMultiDamage");
-	MarkNativeAsOptional("ST_ApplyMultiDamage");
-	MarkNativeAsOptional("ST_AddMultiDamage");
-	MarkNativeAsOptional("ST_RadiusDamage");
-	MarkNativeAsOptional("ST_GetKeyValue");
-	MarkNativeAsOptional("ST_ClearMultiDamage");
-	MarkNativeAsOptional("ST_SetKeyValue");
-	MarkNativeAsOptional("ST_SetKeyValueFloat");
-	MarkNativeAsOptional("ST_SetKeyValueVector");
+	MarkNativeAsOptional("HookRawOnTakeDamage");
+	MarkNativeAsOptional("UnhookRawOnTakeDamage");
+	
+	MarkNativeAsOptional("CAmmoDefs.FindIndex");
+	MarkNativeAsOptional("CAmmoDefs.GetName");
+	MarkNativeAsOptional("CAmmoDefs.GetDamageType");
+	MarkNativeAsOptional("CAmmoDefs.GeteTracerType");
+	MarkNativeAsOptional("CAmmoDefs.GetDamageForce");
+	MarkNativeAsOptional("CAmmoDefs.GetFlags");
+	MarkNativeAsOptional("CAmmoDefs.GetMaxCarry");
+	MarkNativeAsOptional("CAmmoDefs.Raw");
+	
+	MarkNativeAsOptional("ServerTools.FindEntityProcedural");
+	MarkNativeAsOptional("ServerTools.FindEntityClassNearestFacing");
+	MarkNativeAsOptional("ServerTools.FindEntityNearestFacing");
+	MarkNativeAsOptional("ServerTools.FindEntityByClassnameWithin");
+	MarkNativeAsOptional("ServerTools.FindEntityByClassnameNearest");
+	MarkNativeAsOptional("ServerTools.FindEntityByModel");
+	MarkNativeAsOptional("ServerTools.FindEntityInSphere");
+	MarkNativeAsOptional("ServerTools.FirstEntity");
+	MarkNativeAsOptional("ServerTools.NextEntity");
+	MarkNativeAsOptional("ServerTools.FindEntityByHammerID");
+	MarkNativeAsOptional("ServerTools.GetEntityFromAddress");
+	MarkNativeAsOptional("ServerTools.ResetSequence");
+	MarkNativeAsOptional("ServerTools.ResetSequenceInfo");
+	MarkNativeAsOptional("ServerTools.GetKeyValue");
+	MarkNativeAsOptional("ServerTools.ClearMultiDamage");
+	MarkNativeAsOptional("ServerTools.SetKeyValue");
+	MarkNativeAsOptional("ServerTools.SetKeyValueFloat");
+	MarkNativeAsOptional("ServerTools.SetKeyValueVector");
 }
 #endif
 
 public Extension __ext_TF_OBJTOOLS = 
 {
-	name = "[TF2] CTakeDamageInfo and AmmoDef Tools",
+	name = "[TF2] ObjTools",
 	file = "tf_objtools.ext",
 #if defined AUTOLOAD_EXTENSIONS
 	autoload = 1,
