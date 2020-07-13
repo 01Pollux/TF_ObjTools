@@ -2,7 +2,6 @@
 
 #include <ammodef.h>
 #include <mathlib/vector.h>
-#include <vtable_hook_helper.h>
 #include "extension.h"
 
 enum CritType {
