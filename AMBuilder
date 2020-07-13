@@ -8,7 +8,8 @@ sourceFiles = [
   'extension.cpp',
   'ammodefs.cpp',
   'serverutils.cpp',
-  'dmginfo.cpp'
+  'dmginfo.cpp',
+  'serverutils.cpp'
 ]
 
 ###############
