@@ -358,7 +358,7 @@ public __ext_INTERFACE_SetNTVOptional()
 	MarkNativeAsOptional("ServerTools.FirstEntity");
 	MarkNativeAsOptional("ServerTools.NextEntity");
 	MarkNativeAsOptional("ServerTools.FindEntityByHammerID");
-	MarkNativeAsOptional("ServerTools.GetEntityFromAddress");
+	MarkNativeAsOptional("ServerTools.GetBaseEntity");
 	MarkNativeAsOptional("ServerTools.ResetSequence");
 	MarkNativeAsOptional("ServerTools.ResetSequenceInfo");
 	MarkNativeAsOptional("ServerTools.GetKeyValue");
