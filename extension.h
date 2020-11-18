@@ -41,37 +41,82 @@
 #include <ISDKHooks.h>
 #include <ISDKTools.h>
 
-enum HookType;
-class TF2ObjTools:
-				public SDKExtension,
-				public IConCommandBaseAccessor,
-				public IPluginsListener,
-				public ISMEntityListener
+#include <list>
+#include <vector>
+
+struct IHookInfo
 {
 public:
-	bool SDK_OnLoad(char* error, size_t maxlength, bool late);
-	void SDK_OnAllLoaded();
-	bool QueryInterfaceDrop(SMInterface* pInterface);
-	void SDK_OnUnload();
-	bool SDK_OnMetamodLoad(ISmmAPI* ismm, char* error, size_t maxlen, bool late);
-	bool SDK_OnMetamodUnload(char* error, size_t maxlen);
+	int ref;
+	int hookid;
+	std::vector<IPluginFunction*> pCallbacks;
 
 public:
-	bool RegisterConCommandBase(ConCommandBase* pVar);
-
-public:
-	void OnPluginUnloaded(IPlugin* plugin);
-
-public:
-	void OnEntityDestroyed(CBaseEntity* pEntity);
-
-public:
-	void HookEnt(int entity, IPluginFunction* pCallback, HookType type);
-	void UnHookEnt(int entity, IPluginFunction* pCallback, HookType type);
+	IHookInfo(int id, int ref) : hookid(id), ref(ref) { };
+	~IHookInfo()
+	{
+		if (hookid)
+		{
+			SH_REMOVE_HOOK_ID(hookid);
+			hookid = 0;
+		}
+	}
 };
 
-extern IGameConfig* pConfig;
+template<typename C>
+class IGlobalList
+{
+	static std::list<C*>* m_List;
+
+	static void TryAlloc()
+	{
+		if (!m_List) {
+			m_List = new std::list<C*>();
+		}
+	}
+	void TryErase()
+	{
+		if (m_List) 
+		{
+			m_List->remove(static_cast<C*>(this));
+
+			if (m_List->empty()) 
+			{
+				delete m_List;
+				m_List = nullptr;
+			}
+		}
+	}
+
+public:
+	IGlobalList()
+	{
+		TryAlloc();
+		m_List->push_back(static_cast<C*>(this));
+	}
+	virtual ~IGlobalList()
+	{
+		TryErase();
+	}
+
+	static const std::list<C*>& List()
+	{
+		TryAlloc();
+		return *m_List;
+	}
+};
+template<typename C> std::list<C*>* IGlobalList<C>::m_List = nullptr;
+
+class IGlobalHooks: public IGlobalList<IGlobalHooks>
+{
+public:
+	virtual bool OnLoad(char*, size_t) abstract;
+	virtual void OnUnload() { };
+};
+
+
+extern IGameConfig* gconfig;
 extern ISDKTools* sdktools;
-extern TF2ObjTools g_TF2ObjTools;
+
 
 #endif // _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_

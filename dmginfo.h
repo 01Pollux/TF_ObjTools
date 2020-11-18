@@ -1,6 +1,9 @@
-#pragma once
+#ifndef _INCLUDE_DMG_INFO
+#define _INCLUDE_DMG_INFO
 
 #include <ammodef.h>
+#include <vector>
+#include <memory>
 #include <mathlib/vector.h>
 #include "extension.h"
 
@@ -63,89 +66,47 @@ enum TakeDmgOffset
 	eCritType
 };
 
-enum HookType
+class _CTakeDmgInfo: public IGlobalHooks,
+					 public IHandleTypeDispatch,
+					 public ISMEntityListener,
+					 public IPluginsListener
 {
-	GenericPre,
-	AlivePre,
-	GenericPost,
-	AlivePost,
-
-	MaxHooks
-};
+public:	//	IGlobalHooks
+	bool OnLoad(char*, size_t) override;
+	void OnUnload() override;
 
 
-struct IHookP
-{
-public:
-	int ref;
-	int hookid;
-	ke::Vector<IPluginFunction*> pCallbacks;
+public:	//	IHandleTypeDispatch
+	void OnHandleDestroy(Handle_t, void*) override;
+	CTakeDmgInfoBuilder* ReadHandle(IPluginContext*, cell_t);
+	cell_t CreateHandle(CTakeDmgInfoBuilder*, HandleError* = NULL);
 
 public:
-	IHookP(int id, int ref): hookid(hookid), ref(ref) { };
-	~IHookP()
+	HandleType_t hndl_type;
+
+
+public:	//	IPluginsListener
+	void OnPluginUnloaded(IPlugin*) override;
+
+
+public:	//	ISMEntityListener
+	void OnEntityDestroyed(CBaseEntity*);
+
+
+public:
+	enum HookType
 	{
-		if (hookid)
-		{
-			SH_REMOVE_HOOK_ID(hookid);
-			hookid = 0;
-		}
-	}
+		GenericPre,
+		AlivePre,
+		GenericPost,
+		AlivePost,
+
+		MaxHooks
+	};
+	std::vector<std::unique_ptr<IHookInfo>> HookedEnt[MaxHooks];
+
+	void HookEnt(int entity, IPluginFunction* pCallback, HookType type);
+	void UnHookEnt(int entity, IPluginFunction* pCallback, HookType type);
 };
 
-cell_t CTakeDamageInfo_CTakeDamageInfo(IPluginContext* pContext, const cell_t* params);
-cell_t CTakeDamageInfo_GetInt(IPluginContext* pContext, const cell_t* params);
-cell_t CTakeDamageInfo_SetInt(IPluginContext* pContext, const cell_t* params);
-cell_t CTakeDamageInfo_GetFloat(IPluginContext* pContext, const cell_t* params);
-cell_t CTakeDamageInfo_SetFloat(IPluginContext* pContext, const cell_t* params);
-cell_t CTakeDamageInfo_GetVector(IPluginContext* pContext, const cell_t* params);
-cell_t CTakeDamageInfo_SetVector(IPluginContext* pContext, const cell_t* params);
-cell_t CTakeDamageInfo_GetEnt(IPluginContext* pContext, const cell_t* params);
-cell_t CTakeDamageInfo_SetEnt(IPluginContext* pContext, const cell_t* params);
-cell_t CTakeDamageInfo_GetData(IPluginContext* pContext, const cell_t* params);
-cell_t CTakeDamageInfo_SetData(IPluginContext* pContext, const cell_t* params);
-cell_t CTakeDamageInfo_DeathNotice(IPluginContext* pContext, const cell_t* params);
-cell_t CalcExplosiveDmgForce(IPluginContext* pContext, const cell_t* params);
-cell_t CalcBulletDamageForce(IPluginContext* pContext, const cell_t* params);
-cell_t CalcMeleeDamageForce(IPluginContext* pContext, const cell_t* params);
-
-cell_t HookRawOnTakeDamage(IPluginContext* pContext, const cell_t* params);
-cell_t UnhookRawOnTakeDamage(IPluginContext* pContext, const cell_t* params);
-
-CTakeDmgInfoBuilder* ReadDamageInfoFromHandle(IPluginContext* pContext, cell_t Param);
-
-const sp_nativeinfo_t g_InfoNatives[] =
-{
-	{"CTakeDamageInfo.CTakeDamageInfo", CTakeDamageInfo_CTakeDamageInfo},
-	{"CTakeDamageInfo.ReadInt", CTakeDamageInfo_GetInt},
-	{"CTakeDamageInfo.StoreInt", CTakeDamageInfo_SetInt},
-	{"CTakeDamageInfo.ReadFloat", CTakeDamageInfo_GetFloat},
-	{"CTakeDamageInfo.StoreFloat", CTakeDamageInfo_SetFloat},
-	{"CTakeDamageInfo.ReadVector", CTakeDamageInfo_GetVector},
-	{"CTakeDamageInfo.StoreVector", CTakeDamageInfo_SetVector},
-	{"CTakeDamageInfo.ReadEnt", CTakeDamageInfo_GetEnt},
-	{"CTakeDamageInfo.StoreEnt", CTakeDamageInfo_SetEnt},
-	{"CTakeDamageInfo.Infos.get", CTakeDamageInfo_GetData},
-	{"CTakeDamageInfo.Infos.set", CTakeDamageInfo_SetData},
-	{"CTakeDamageInfo.DeathNotice", CTakeDamageInfo_DeathNotice},
-	{"CTakeDamageInfo.CalcExplosiveDmgForce", CalcExplosiveDmgForce},
-	{"CTakeDamageInfo.CalcBulletDamageForce", CalcBulletDamageForce},
-	{"CTakeDamageInfo.CalcMeleeDamageForce", CalcBulletDamageForce},
-
-	{"HookRawOnTakeDamage", HookRawOnTakeDamage},
-	{"UnhookRawOnTakeDamage", UnhookRawOnTakeDamage},
-	{NULL, NULL},
-};
-
-class CTakeDmgInfoHandler: public IHandleTypeDispatch
-{
-public:
-	void OnHandleDestroy(Handle_t type, void* object);
-};
-
-CTakeDmgInfoBuilder* ReadDamageInfoFromHandle(IPluginContext* pContext, cell_t Param);
-
-extern CTakeDmgInfoHandler g_CTakeDmgInfoHandler;
-extern HandleType_t g_TakeDmgInfo;
-extern ConVar* phys_pushscale;
-extern ke::Vector<IHookP*> IHookedEnt[MaxHooks];
+#endif

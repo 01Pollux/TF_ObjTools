@@ -7,8 +7,6 @@
 #define _TF_OBJTOOLS_included
 
 enum CTakeDamageOffset {
-	vecDamageForce = 0,
-	vecDamagePosition,
 	vecReportedPosition,
 	
 	hInflictor,
@@ -19,6 +17,9 @@ enum CTakeDamageOffset {
 	flMaxDamage,
 	flBaseDamage,
 	bitsDamageType,
+
+	vecDamageForce = 0,
+	vecDamagePosition,
 	iDamageCustom,
 	iDamageStats,
 	iAmmoType,
@@ -317,6 +318,105 @@ methodmap ServerTools
 }
 
 
+methodmap NetChannel
+{
+	/**
+	 * Get client's Net Channel.
+	 * 
+	 * @param client
+	 */
+	public static native NetChannel GetNetInfo(int client);
+	
+	/**
+	 * data rate in byte/sec
+	 */
+	property int DataRate {
+		public native get();
+		public native set(const int rate);
+	}
+	
+	property float TimeOut {
+		public native set(const float sec);
+	}
+	
+	/**
+	 * channel's packet size
+	 */
+	property int BufferSize {
+		public native get();
+	}
+	
+	/**
+	 * packets lost before getting last update
+	 */
+	property int DropNumber {
+		public native get();
+	}
+	
+	property float Time {
+		public native get();
+	}
+	
+	/**
+	 * TimeConnected = Time - (time since connect)
+ 	 */
+	property float TimeConnected {
+		public native get();
+	}
+	
+	property bool IsOverflowed {
+		public native get();
+	}
+	
+	property bool IsLoopback {
+		public native get();
+	}
+	
+	property bool IsNull {
+		public native get();
+	}
+	
+	property bool IsTimingOut {
+		public native get();
+	}
+	
+	property Address MsgHandler {
+		public native get();
+	}
+	
+	/**
+	 * channel's IP address as string
+	 */
+	public native void Address(char[] buffer, int maxlen);
+	
+	public native float AvgChoke(NetFlow flow);
+	public native float AvgData(NetFlow flow);
+	public native float AvgLatency(NetFlow flow);
+	public native float AvgLoss(NetFlow flow);
+	public native float AvgPackets(NetFlow flow);
+	
+	public native void SetMaxBufferSize(bool reliable, int bytes, bool voice);
+	
+	/**
+	 * time when packet was sent
+	 */
+	public native float GetPacketTime(NetFlow flow, int frame);
+	
+	/**
+	 * true if packet was not lost, dropped, chocked or flushed
+	 */
+	public native bool IsValidPacket(NetFlow flow, int frame);
+	
+	public native float SendData(Address bfwrite_data);
+	public native void Reset();
+	/*
+	MarkNativeAsOptional("NetChannel.IsValidPacket");
+	MarkNativeAsOptional("NetChannel.SendData");
+	MarkNativeAsOptional("NetChannel.Reset");
+	*/
+}
+
+
 #if !defined REQUIRE_EXTENSIONS
 public __ext_INTERFACE_SetNTVOptional()
 {
@@ -366,6 +466,31 @@ public __ext_INTERFACE_SetNTVOptional()
 	MarkNativeAsOptional("ServerTools.SetKeyValue");
 	MarkNativeAsOptional("ServerTools.SetKeyValueFloat");
 	MarkNativeAsOptional("ServerTools.SetKeyValueVector");
+	
+	MarkNativeAsOptional("NetChannel.GetNetInfo");
+	MarkNativeAsOptional("NetChannel.DataRate.get");
+	MarkNativeAsOptional("NetChannel.DataRate.set");
+	MarkNativeAsOptional("NetChannel.TimeOut.set");
+	MarkNativeAsOptional("NetChannel.BufferSize.get");
+	MarkNativeAsOptional("NetChannel.Address");
+	MarkNativeAsOptional("NetChannel.DropNumber.get");
+	MarkNativeAsOptional("NetChannel.AvgChoke");
+	MarkNativeAsOptional("NetChannel.AvgData");
+	MarkNativeAsOptional("NetChannel.AvgLatency");
+	MarkNativeAsOptional("NetChannel.AvgLoss");
+	MarkNativeAsOptional("NetChannel.AvgPackets");
+	MarkNativeAsOptional("NetChannel.SetMaxBufferSize");
+	MarkNativeAsOptional("NetChannel.Time.get");
+	MarkNativeAsOptional("NetChannel.TimeConnected.get");
+	MarkNativeAsOptional("NetChannel.GetPacketTime");
+	MarkNativeAsOptional("NetChannel.IsOverflowed.get");
+	MarkNativeAsOptional("NetChannel.IsLoopback.get");
+	MarkNativeAsOptional("NetChannel.IsNull.get");
+	MarkNativeAsOptional("NetChannel.IsTimingOut.get");
+	MarkNativeAsOptional("NetChannel.MsgHandler.get");
+	MarkNativeAsOptional("NetChannel.IsValidPacket");
+	MarkNativeAsOptional("NetChannel.SendData");
+	MarkNativeAsOptional("NetChannel.Reset");
 }
 #endif
 

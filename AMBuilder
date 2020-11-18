@@ -5,10 +5,11 @@ projectName = 'tf_objtools'
 
 # smsdk_ext.cpp will be automatically added later
 sourceFiles = [
-  'extension.cpp',
-  'ammodefs.cpp',
-  'serverutils.cpp',
   'dmginfo.cpp',
+  'netchannel.cpp',
+  'serverutils.cpp',
+  'ammodefs.cpp',
+  'extension.cpp',
 ]
 
 ###############
