@@ -315,6 +315,8 @@ methodmap ServerTools
 	 * @param value
 	 */
 	public static native bool SetKeyValueVector(int entity, const char[] key, const float value[3]);
+	
+	public static native bool IsEntityPtr(Address addr);
 }
 
 
