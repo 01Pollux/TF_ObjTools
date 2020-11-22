@@ -2,6 +2,7 @@
 #include "extension.h"
 #include "dmginfo.h"
 #include <random>
+#include <algorithm>
 
 #define DECL_NATIVE_CALLBACK(NAME)		cell_t CTakeDamageInfo_##NAME(IPluginContext* pContext, const cell_t* params)
 #define DECL_NATIVE_CALLBACK_GET(NAME)	cell_t CTakeDamageInfo_##NAME##_GET(IPluginContext* pContext, const cell_t* params)
@@ -75,17 +76,19 @@ void _CTakeDmgInfo::OnPluginUnloaded(IPlugin* pPlugin)
 	IPluginContext* pContext = pPlugin->GetBaseContext();
 	for (auto& hooks : HookedEnt)
 	{
-		for (auto entry = hooks.begin(); entry != hooks.end(); entry++)
+		for (auto entry = hooks.begin(); entry != hooks.end();)
 		{
 			auto& callbacks = (*entry)->pCallbacks;
-			for (auto iter = callbacks.begin(); iter != callbacks.end(); iter++)
+			for (auto iter = callbacks.begin(); iter != callbacks.end(); iter)
 			{
 				if ((*iter)->GetParentContext() == pContext)
-					callbacks.erase(iter--);
+					iter = callbacks.erase(iter);
+				else iter++;
 			}
 
 			if (callbacks.empty())
-				hooks.erase(entry--);
+				entry = hooks.erase(entry);
+			else entry++;
 		}
 	}
 }
